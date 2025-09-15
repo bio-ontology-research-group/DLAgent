@@ -34,6 +34,7 @@ Validated Entities:
 }}
 ```
 Resulting Manchester Expression:
+
 Car and (hasPart exactly 4 Wheel)
 
 ## EXAMPLE 3:
@@ -71,5 +72,3 @@ Validated Entities:
 Resulting Manchester Expression:
 
 Animal and (eats only Plant)
-Animal and (eats only Plant)
-Resulting Manchester Expression:
