@@ -1,5 +1,6 @@
-
-EXAMPLE 1:
+# Examples
+## EXAMPLE 1:
+```
 Natural Language Query: "pizzas with cheese or mushroom toppings"
 Validated Entities:
 {{
@@ -12,7 +13,7 @@ Validated Entities:
     "hasTopping": {{"label": "hasTopping"}}
   }}
 }}
-
+```
 Resulting Manchester Expression:
 Pizza and (hasTopping some (Cheese or Mushroom))
 
