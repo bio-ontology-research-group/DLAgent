@@ -1,6 +1,7 @@
 # Examples
 ## EXAMPLE 1:
 Natural Language Query: "pizzas with cheese or mushroom toppings"
+
 Validated Entities:
 ```
 {{
@@ -15,6 +16,7 @@ Validated Entities:
 }}
 ```
 Resulting Manchester Expression:
+
 Pizza and (hasTopping some (Cheese or Mushroom))
 
 ## EXAMPLE 2:
@@ -36,6 +38,7 @@ Car and (hasPart exactly 4 Wheel)
 
 ## EXAMPLE 3:
 Natural Language Query: "red or blue vehicles"
+
 Validated Entities:
 ```
 {{
@@ -48,6 +51,7 @@ Validated Entities:
 }}
 ```
 Resulting Manchester Expression:
+
 Vehicle and (Red or Blue)
 
 ## EXAMPLE 4:
@@ -65,5 +69,7 @@ Validated Entities:
 }}
 ```
 Resulting Manchester Expression:
+
+Animal and (eats only Plant)
 Animal and (eats only Plant)
 Resulting Manchester Expression:
