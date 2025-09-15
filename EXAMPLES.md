@@ -1,8 +1,8 @@
 # Examples
 ## EXAMPLE 1:
-```
 Natural Language Query: "pizzas with cheese or mushroom toppings"
 Validated Entities:
+```
 {{
   "classes": {{
     "pizza": {{"label": "Pizza"}},
@@ -17,10 +17,10 @@ Validated Entities:
 Resulting Manchester Expression:
 Pizza and (hasTopping some (Cheese or Mushroom))
 
----
-EXAMPLE 2:
+## EXAMPLE 2:
 Natural Language Query: "cars with exactly 4 wheels"
 Validated Entities:
+```
 {{
   "classes": {{
     "car": {{"label": "Car"}},
@@ -30,14 +30,14 @@ Validated Entities:
     "hasPart": {{"label": "hasPart"}}
   }}
 }}
-
+```
 Resulting Manchester Expression:
 Car and (hasPart exactly 4 Wheel)
 
----
-EXAMPLE 3:
+## EXAMPLE 3:
 Natural Language Query: "red or blue vehicles"
 Validated Entities:
+```
 {{
   "classes": {{
     "vehicle": {{"label": "Vehicle"}},
@@ -46,14 +46,14 @@ Validated Entities:
   }},
   "properties": {{}}
 }}
-
+```
 Resulting Manchester Expression:
 Vehicle and (Red or Blue)
 
----
-EXAMPLE 4:
+## EXAMPLE 4:
 Natural Language Query: "animals that eat only plants"
 Validated Entities:
+```
 {{
   "classes": {{
     "animal": {{"label": "Animal"}},
@@ -63,15 +63,7 @@ Validated Entities:
     "eats": {{"label": "eats"}}
   }}
 }}
-
+```
 Resulting Manchester Expression:
 Animal and (eats only Plant)
-
----
-Now, generate the Manchester expression for the following:
-
-Natural Language Query: "{query}"
-Validated Entities:
-{validation_json}
-
 Resulting Manchester Expression:
