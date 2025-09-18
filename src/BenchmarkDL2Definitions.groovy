@@ -6,7 +6,9 @@
   @Grab(group='net.sourceforge.owlapi', module='owlapi-parsers', version='4.1.0'),
   @GrabConfig(systemClassLoader=true)
   ])
+
 package src
+
 import org.semanticweb.owlapi.model.parameters.*
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.reasoner.*
@@ -21,9 +23,12 @@ import org.semanticweb.elk.reasoner.config.*
 import org.semanticweb.owlapi.manchestersyntax.renderer.*
 import org.semanticweb.owlapi.formats.*
 import src.LabelShortFormProvider
+
+
+
 OWLOntologyManager manager = OWLManager.createOWLOntologyManager()
 OWLOntology ont = manager.loadOntologyFromOntologyDocument(
-  new File("data/hp.owl"))
+  new File("data/uberon.owl"))
 OWLDataFactory dataFactory = manager.getOWLDataFactory()
 ConsoleProgressMonitor progressMonitor = new ConsoleProgressMonitor()
 OWLReasonerConfiguration config = new SimpleConfiguration(progressMonitor)
@@ -59,7 +64,7 @@ def definitions = [
 	df.getOWLAnnotationProperty(new IRI('http://www.geneontology.org/formats/oboInOwl#hasDefinition'))
     ]
 out = new PrintWriter(
-    new BufferedWriter(new FileWriter("data/benchmarkDL2Definitions_hp.txt")))
+    new BufferedWriter(new FileWriter("data/benchmarkDL2Definitions_uberon.txt")))
 
 
 ont.getClassesInSignature(true).each { cl ->
@@ -95,7 +100,7 @@ ont.getClassesInSignature(true).each { cl ->
     
     // Print one line per class with English label, one definition, and one DL expression
     if (clName && dlExpression && englishDefinition) {
-      out.print(clName + "\t" + (dlExpression.replaceAll("\n") ?: " ") + "\t" + (englishDefinition ?: "") + "\n");
+      out.print(clName + "\t" + (dlExpression.replaceAll("\n"," ") ?: "") + "\t" + (englishDefinition ?: "") + "\n");
       //out.print("CLASS name:" + clName + "\tdl:" + (dlExpression ?: "") + "\tdef:" + (englishDefinition ?: "") + "\n");
 }
 }
