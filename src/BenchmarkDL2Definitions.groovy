@@ -95,7 +95,7 @@ ont.getClassesInSignature(true).each { cl ->
     
     // Print one line per class with English label, one definition, and one DL expression
     if (clName && dlExpression && englishDefinition) {
-      out.print(clName + "\t" + (dlExpression ?: "") + "\t" + (englishDefinition ?: "") + "\n");
+      out.print(clName + "\t" + (dlExpression.replaceAll("\n") ?: " ") + "\t" + (englishDefinition ?: "") + "\n");
       //out.print("CLASS name:" + clName + "\tdl:" + (dlExpression ?: "") + "\tdef:" + (englishDefinition ?: "") + "\n");
 }
 }
