@@ -1,3 +1,4 @@
+import json
 from camel.toolkits import FunctionTool
 import requests
 import re
@@ -8,27 +9,26 @@ def cleanhtml(raw_html):
   cleantext = re.sub(CLEANR, '', raw_html)
   return cleantext
 
-def subclasses(ontology: str, owl_class_label: str = None) -> str:
+def subclasses(ontology: str, owl_class_iri: str = None) -> str:
     """Retrieve subclasses of a given OWL class from AberOWL.
     Args:
         ontology (str): The ontology to use (e.g., "HP" for the Human Phenotype Ontology).
-        owl_class_label (str): The OWL class (e.g., "Phenotypic abnormality"). If None, retrieves subclasses of owl:Thing.
+        owl_class_iri (str): The OWL class (e.g., "<http://purl.obolibrary.org/obo/HP_0000001>"). If None, retrieves subclasses of owl:Thing.
     Returns:
         list: list of subclasses of the OWL class.
     """
-    print(f"Retrieving subclasses of {owl_class_label if owl_class_label else 'owl:Thing'} from {ontology} ontology...")
-    if owl_class_label is None or owl_class_label.lower() == "owl:thing":
-        response = requests.get(f"http://aber-owl.net/api/dlquery",
-                                params=f"type=subclass&direct=true&query=<http://www.w3.org/2002/07/owl%23Thing>&ontology={ontology}")
+    if owl_class_iri.startswith("http"):
+        owl_class_iri = f"<{owl_class_iri}>"
+    print(f"Retrieving subclasses of {owl_class_iri if owl_class_iri else 'owl:Thing'} from {ontology} ontology...")
+    if owl_class_iri is None or owl_class_iri.lower() == "owl:thing":
+        response = requests.get(f"http://localhost:8001/api/api/runQuery.groovy?direct=true&axioms=true&query=%3Chttp%3A%2F%2Fwww.w3.org/2002/07/owl%23Thing%3E&type=subclass")
     else:
-        if owl_class_label.find(' ') != -1:
-            owl_class_label = f'%27{quote(owl_class_label)}%27'
-        response = requests.get(f"http://aber-owl.net/api/dlquery",
-                            params=f"axioms=true&labels=true&type=subclass&query={owl_class_label}&ontology={ontology}")
+        response = requests.get(f"http://localhost:8001/api/api/runQuery.groovy",
+                            params=f"type=subclass&query={quote(owl_class_iri)}&ontology={ontology}")
     response.raise_for_status()
     data = response.json()
     result = []
-    if 'status' in data and data['status'] == 'ok' and len(data['result']) > 0:
+    if len(data['result']) > 0:
         for item in data['result']:
             if 'class' not in item:
                 continue
@@ -48,7 +48,7 @@ def search(ontology: str, search_term: str) -> str:
         list: list of classes matching the search term.
     """
     print(f"Searching for {search_term} in {ontology} ontology...")
-    response = requests.get(f"http://aber-owl.net/api/class/_startwith",
+    response = requests.get(f"http://localhost:8001/api/class/_startwith",
                             params=f"query={quote(search_term)}&ontology={ontology}")
     response.raise_for_status()
     data = response.json()
@@ -59,8 +59,33 @@ def search(ontology: str, search_term: str) -> str:
             result.append(item)
     return "\n\n".join(result)
 
+def object_properties(ontology: str) -> str:
+    """Retrieve object properties of a given property from AberOWL.
+    Args:
+        ontology (str): The ontology to use (e.g., "HP" for the Human Phenotype Ontology).
+    Returns:
+        list: list of object properties of the given property.
+    """
+    print(f"Retrieving object properties of {ontology} ontology...")
+    def get_object_properties(prop: str) -> dict:
+        response = requests.get(f"http://localhost:8001/api/api/getObjectProperties.groovy",
+                                params=f"ontology={ontology}&property={quote(prop)}")
+        response.raise_for_status()
+        result = response.json()['result']
+        for item in result:
+            item['subproperties'] = get_object_properties(item['class'])
+        return result
+    response = requests.get(f"http://localhost:8001/api/api/getObjectProperties.groovy",
+                            params=f"ontology={ontology}")
+    response.raise_for_status()
+    result = response.json()['result']
+    for item in result:
+        item['subproperties'] = get_object_properties(item['class'])
+    return json.dumps(result)
+
 subclasses_tool = FunctionTool(subclasses)
 search_tool = FunctionTool(search)
+object_properties_tool = FunctionTool(object_properties)
 
 if __name__ == "__main__":
-    print(subclasses("AGRO"))
+    print(subclasses("GO"))
